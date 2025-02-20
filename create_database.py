@@ -2,7 +2,7 @@
 import os
 from flask import Flask
 """ db and models imported from data_models.py """
-from datamanager.data_models import db, User, Movie, Review, Director, Genre
+from datamanager.data_models import db
 
 app = Flask(__name__)
 
