@@ -7,11 +7,11 @@ class SQLiteDataManager(DataManagerInterface):
 
     def get_all_users(self):
         """ Returns a list of all users in the database. """
-        pass
+
 
     def get_user_movies(self, user_id):
         """ Returns a list of all movies of a specific user. """
-        pass
+
 
     def add_user(self):
         """ Adds a new user to the database. """
