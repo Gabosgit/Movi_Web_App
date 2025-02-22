@@ -1,0 +1,36 @@
+<!-- templates/index.html -->
+{% extends "layout.html" %}
+
+{% block title %}
+<!-- the title in layout.html -->
+Users
+{% endblock %}
+
+{% block content %}
+<div class="container users">
+
+    <div class="div_form">
+      <form action="" method="post">
+          <h2>login</h2>
+          <p>Search for a <b>username</b>.<br>
+              Empty field show <b>all users</b>.
+          </p>
+          <div class="_input">
+              <label for="search_name"><b>user name:</b></label>
+              <input type="text" id="search_name" name="search_name" placeholder=" Let empty for all users">
+              <input type="submit" value="login">
+          </div>
+          <p>Select a <b>user</b> from the list.</p>
+      </form>
+    </div>
+
+    <div class="list-group">
+      <h4>Users list</h4>
+      {% for user in users %}
+        <a href="/users/{{ user.user_id }}" class="list-group-item list-group-item-action">
+            <button name="user_id" value="{{ user.user_id }}">{{ user.user_id }} | {{ user.user_name }}</button>
+        </a>
+      {% endfor %}
+    </div>
+</div>
+{% endblock %}
