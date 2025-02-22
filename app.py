@@ -68,8 +68,21 @@ def list_users():
 def user_movies(user_id):
     """ Exhibits a specific user’s list of favorite movies.
         Uses the <user_id> to fetch the appropriate user’s movies."""
+    data = {
+        'poster_url': '',
+        'title': "NOT FOUND",
+        'year': '',
+        'genre': '',
+        'director': '',
+        'rating': ''
+    }
+
     user = User.query.get(user_id)
-    return render_template('user_movies.html', user=user)
+    movies = user.movies
+    for movie in movies:
+        print(movie.movie_title, movie.movie_genre, movie.release_year, movie.rating, movie.director)
+    print()
+    return render_template('user_movies.html', user=user, movies=movies)
 
 
 @app.route('/add_user', methods=['GET', 'POST'])
@@ -155,15 +168,16 @@ def connect_user_movie(user_id, id_new_movie):
             return False
 
 
-
 @app.route('/users/<user_id>/add_movie', methods=['GET', 'POST'])
 def add_movie(user_id):
     msg = ''
+    user = User.query.get(user_id)
+    data = {}
 
     if request.method == 'POST':
         movie_title = request.form.get('movie_title')
         add_this_movie = request.form.get('add_this_movie')
-        user = User.query.get(user_id)
+        print(user)
         from_ipa_fetched_data = fetch_data(movie_title)
         data = get_needed_data(from_ipa_fetched_data)
 
@@ -182,6 +196,8 @@ def add_movie(user_id):
                 data = get_needed_data(from_ipa_fetched_data)
                 msg = f'Here is the film found with the search entry "{movie_title}"'
 
+            return render_template('add_movie.html', user_id=user_id, user_name=user.user_name, data=data, msg=msg)
+
         if add_this_movie:
             from_ipa_fetched_data = fetch_data(add_this_movie)
             data = get_needed_data(from_ipa_fetched_data)
@@ -196,9 +212,9 @@ def add_movie(user_id):
             # Adds the movie in the association list user.movies
             connect_user_movie(user_id, id_new_movie)
 
-        return render_template("add_movie.html", user_id=user_id, user_name=user.user_name, data=data, msg=msg)
+            return render_template("user_movies.html", user_id=user_id, user=user, data=data, msg=msg)
 
-    return render_template('add_movie.html')
+    return render_template('add_movie.html', user_id=user_id, user_name=user.user_name, data=data, msg=msg)
 
 
 @app.route('/users/<user_id>/update_movie/<movie_id>')

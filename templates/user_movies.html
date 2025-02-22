@@ -9,11 +9,60 @@ user movies
 {% block content %}
 <!-- the content in the layout -->
 <div class="container">
-  <h1>USER MOVIES</h1>
-  <p><b>Hello {{ user.user_name }} !!!</b></p>
-  <p>Select an option from the menu.</p>
-  <form action="/users/{{ user.user_id }}/add_movie" method="POST">
-    <button type="submit" class="btn btn-info" name="user_id" value="{{ user.user_id }}">add movie</button>
-  </form>
+  <section>
+    <div class="row">
+      <div class="col">
+        <h1>USER MOVIES</h1>
+      </div>
+      <div class="col" style="display: flex-block; text-align: right;"><p>
+        <b>Hello {{ user.user_name }} !!!</b></p>
+        <p>Click here to add a movie.</p>
+        <form action="/users/{{ user.user_id }}/add_movie" method="POST">
+          <button type="submit" class="btn btn-info" name="user_id" value="{{ user.user_id }}">add movie</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="">
+      <h4>Your movies</h4>
+      {% for movie in movies %}
+        <div class="row movie_in_list">
+          <div class="col">
+            <img src="{{ poster_url }}">
+            <h4>{{ movie.movie_title }}</h4>
+            <span>{{ movie.release_year }}</span>
+          </div>
+          <div class="col">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>genre</th>
+                  <th>director</th>
+                  <th>rating</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{ movie.movie_genre }}</td>
+                  <td>{{ movie.director.director_name }}</td>
+                  <td>{{ movie.rating }}
+              </tbody>
+            </table>
+          </div>
+           <div class="col" style="display: flex; justify-content: center; align-items: center; ">
+             <form action="" method="POST">
+               <button type="button" class="btn btn-warning" href="/users/<user_id>/update_movie/<movie_id>" name="update" value="update" >update</button>
+             </form>
+             <form action="" method="POST">
+               <button type="button" class="btn btn-danger" href="/users/<user_id>/delete_movie/<movie_id>" name="delete" value="delete">delete</button>
+             </form>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
 </div>
+
 {% endblock %}

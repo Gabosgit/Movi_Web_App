@@ -107,7 +107,7 @@ input[type="submit"]:active {
     font-size: 20px;
 
 }
-.show_movies .row .col span {
+span {
     font-size: 20px;
     color: gray;
 }
