@@ -154,7 +154,35 @@ input[type="submit"]:active {
 
 }
 
+
 /* USER MOVIES */
+
+.section_movie .col_movie {
+    padding: 40px;
+}
+.section_movie .row_movie {
+    display: flex;
+    height: 100%
+}
+
+.section_movie .col_content{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: space-between;
+}
+.section_movie .table {
+    margin-top: auto;
+}
+.section_movie .movie_options {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: auto;
+}
+
+
+/* ADD MOVIE */
 .show_movies .row .col {
     display: flex;
     flex-direction: column;
@@ -197,13 +225,6 @@ span {
     margin-top: 20px;
 }
 
-/* USER_MOVIES */
-.movie_options {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-}
 
 
 

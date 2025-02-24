@@ -20,9 +20,12 @@ movie_genre_association = Table(
 user_movie_association = Table(
     'user_movie_association',
     db.metadata,
-    Column('user_id', Integer, ForeignKey('user.id'), primary_key=True),
-    Column('movie_id', Integer, ForeignKey('movie.id'), primary_key=True)
+    Column('id', Integer, primary_key=True),
+    Column('user_id', Integer, ForeignKey('user.id')),
+    Column('movie_id', Integer, ForeignKey('movie.id'))
 )
+
+
 
 
 class User(db.Model):

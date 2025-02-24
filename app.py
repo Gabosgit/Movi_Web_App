@@ -78,8 +78,18 @@ def user_movies(user_id):
     }
 
     user = User.query.get(user_id)
-    movies = user.movies
-    return render_template('user_movies.html', user=user, movies=movies)
+    # Sort user movies by user_movie_association ID
+    # The last movie added is the first one listed
+    movies = (
+        db.session.query(Movie)
+        .join(user_movie_association, Movie.id == user_movie_association.c.movie_id)
+        .filter(user_movie_association.c.user_id == user_id)
+        .order_by(user_movie_association.c.id.desc())  # Added .desc() here
+        .all()
+    )
+    count_user_movies = len(movies)
+
+    return render_template('user_movies.html', user=user, movies=movies, count_user_movies=count_user_movies)
 
 
 @app.route('/add_user', methods=['GET', 'POST'])
@@ -177,6 +187,8 @@ def connect_user_movie(user_id, id_new_movie):
 def add_movie(user_id):
     msg = ''
     user = User.query.get(user_id)
+
+
     data = {}
 
     if request.method == 'POST':
@@ -188,38 +200,57 @@ def add_movie(user_id):
         if not movie_title is None:
             data = get_needed_data(from_ipa_fetched_data)
             if from_ipa_fetched_data['Response'] == 'False':
-                msg = f'No movie with the search entry "{movie_title}" was found.'
+                msg = {'text': f'No movie with the search entry "{movie_title}" was found.',
+                       'color': 'red'}
             else:
-                msg = f'Here is the film found with the search entry "{movie_title}"'
+                msg = {'text': f'Here is the movie found with the search entry "{movie_title}"',
+                       'color': '#56ABB3'}
 
             return render_template('add_movie.html', user_id=user_id, user=user, movie=data, msg=msg)
 
         elif add_this_movie:
             from_ipa_fetched_data = fetch_data(add_this_movie)
             data = get_needed_data(from_ipa_fetched_data)
-            msg = f'"{add_this_movie}" was added to your movie list!'
+            title_in_db = data['title']
+            movie_in_db = db.session.query(Movie).filter(Movie.title == title_in_db).first()
+            title_in_user_movies = [movie.title for movie in user.movies]
+            if title_in_db in title_in_user_movies:
+                print("ALREADY IN THE LIST")
+                msg = {'text': f"The movie {title_in_db} is already in your favorite movies list",
+                       'color': "orange"
+                       }
 
-            # External function
-            id_director = add_director_return_record_id(data['director'])
+                return render_template('add_movie.html', user_id=user_id, user=user, movie=data, msg=msg)
 
-            # External function
-            id_new_movie = add_movie_return_record_id(id_director, data)
+            elif movie_in_db:
+                id_movie_in_db = movie_in_db.id
+                connect_user_movie(user_id, id_movie_in_db)
 
-            # Adds the movie in the association list user.movies
-            connect_user_movie(user_id, id_new_movie)
+            else:
+                msg = f'"{add_this_movie}" was added to your movie list!'
 
-            #user = User.query.get(user_id)
-            movies = user.movies
+                # External function
+                id_director = add_director_return_record_id(data['director'])
 
-            return render_template("user_movies.html", user_id=user_id, user=user, movies=movies, msg=msg)
+                # External function
+                id_new_movie = add_movie_return_record_id(id_director, data)
+
+                # Adds the movie in the association list user.movies
+                connect_user_movie(user_id, id_new_movie)
+
+            # sort movies descending
+            movies = (
+                db.session.query(Movie)
+                .join(user_movie_association, Movie.id == user_movie_association.c.movie_id)
+                .filter(user_movie_association.c.user_id == user_id)
+                .order_by(user_movie_association.c.id.desc())  # Added .desc() here
+                .all()
+            )
+            count_user_movies = len(movies)
+
+            return render_template("user_movies.html", user_id=user_id, user=user, movies=movies, msg=msg, count_user_movies=count_user_movies)
 
     return render_template('add_movie.html', user_id=user_id, user=user, movie=data, msg=msg)
-
-
-@app.route('/users/<user_id>/update_movie/<movie_id>')
-def update_movie():
-    """ displays a form allowing for the updating of details of a specific movie in a user’s list """
-    pass
 
 
 @app.route('/users/<user_id>/delete_movie/<movie_id>', methods=['GET', 'POST'])
@@ -238,7 +269,6 @@ def delete_movie(user_id, movie_id):
             user.movies.remove(movie)  # Remove the movie from the users movie list.
             db.session.commit()
             msg = f'The film " {movie.title} " was deleted from your favorite movies list.'
-            print("HIER!")
             return render_template('delete_movie.html', movie=movie, user=user, msg=msg, display='none')
         else:
             print("User or Movie Not found")
@@ -246,7 +276,10 @@ def delete_movie(user_id, movie_id):
     return render_template('delete_movie.html', movie=movie, user=user, msg=msg)
 
 
-
+@app.route('/users/<user_id>/update_movie/<movie_id>')
+def update_movie():
+    """ displays a form allowing for the updating of details of a specific movie in a user’s list """
+    return render_template('upload_movie.html')
 
 
 

@@ -15,7 +15,7 @@ Add Author
     <h3 style="text-align: center">" {{ movie.title }} "</h3>
   </div>
   <div class="flex_center">
-    <p><b>No, go back to</b></p>
+    <p><b>Go back to</b></p>
     <form action="/users/{{ user.id }}" method="GET">
       <button type="submit" class="btn btn-primary" name="user_id" value="{{ user.id }}">favorite movies</button>
     </form>
