@@ -1,0 +1,34 @@
+<!-- templates/index.html -->
+{% extends "layout.html" %}
+
+{% block title %}
+<!-- the title in layout.html -->
+Add Author
+{% endblock %}
+
+{% block content %}
+<!-- the content in the layout -->
+<div class="_delete flex_column_center_center">
+  <div class="">
+    <h1>DELETE MOVIE</h1><br>
+    <p >{{ msg }}</p>
+    <h3 style="text-align: center">" {{ movie.title }} "</h3>
+  </div>
+  <div class="flex_center">
+    <p><b>No, go back to</b></p>
+    <form action="/users/{{ user.id }}" method="GET">
+      <button type="submit" class="btn btn-primary" name="user_id" value="{{ user.id }}">favorite movies</button>
+    </form>
+  </div>
+  <div class="flex_center" style="display: {{ display }};">
+    <p><b>yes, delete it.</b></p>
+    <form action="/users/{{ user.id }}/delete_movie/{{ movie.id }}" method="POST">
+      <button type="submit" class="btn btn-danger" name="delete" value="delete">delete</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+
+
+

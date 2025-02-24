@@ -23,7 +23,7 @@ p {margin: 0px;}
 }
 
 .container {
-    padding-top: 10px;
+    padding-top: 30px;
     padding-bottom: 20px;
 }
 
@@ -32,6 +32,10 @@ p {margin: 0px;}
     flex-direction: column;
     justify-content: center;
 }
+.flex_center {
+    text-align: center;
+}
+
 
 /* GENERAL INPUTS */
 input[type="submit"] {
@@ -102,8 +106,6 @@ input[type="submit"]:active {
     padding: 10px;
     text-align: center;
 }
-
-
 .index .login-sign_up {
     display: flex;
     flex-direction: column;
@@ -131,6 +133,9 @@ input[type="submit"]:active {
     padding: 10px 0px;
     text-align: center;
 }
+.div_form form p {
+    margin-top: 10px;
+}
 .div_form form h1 {
     text-align: center;
 
@@ -149,7 +154,7 @@ input[type="submit"]:active {
 
 }
 
-
+/* USER MOVIES */
 .show_movies .row .col {
     display: flex;
     flex-direction: column;
@@ -167,6 +172,7 @@ span {
 }
 .show_movies .row .col .movie_info {
     padding: 30px;
+
 }
 .show_movies .row .col .poster img {
     height: 100%;
@@ -174,12 +180,34 @@ span {
 }
 .show_movies .row .col .div_button {
     padding: 20px 0px;
-}
 
+}
 .show_movies .row .col .div_note p {
     font-size: 11px;
     color: gray;
 }
+
+
+/* DELETE MOVIE */
+._delete h1 {
+    text-align: center;
+    color: red;
+}
+._delete .flex_center {
+    margin-top: 20px;
+}
+
+/* USER_MOVIES */
+.movie_options {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+
+
+
 
 
 /* MEDIA QUERIES*/

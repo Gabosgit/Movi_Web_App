@@ -28,7 +28,6 @@ def fetch_data(movie_title):
     response = requests.get(API_URL)
     if response.status_code == requests.codes.ok:
         json_data = response.json()
-        print(json_data)
         return json_data
     else:
         print("Error:", response.status_code, response.text)
@@ -111,7 +110,6 @@ def get_needed_data(data_movie):
         }
     else:
         poster = data_movie['Poster']
-        print(poster)
         title = data_movie['Title']
         year = data_movie['Year']
         genre = data_movie['Genre']
@@ -224,10 +222,31 @@ def update_movie():
     pass
 
 
-@app.route('/users/<user_id>/delete_movie/<movie_id>')
-def delete_movie():
+@app.route('/users/<user_id>/delete_movie/<movie_id>', methods=['GET', 'POST'])
+def delete_movie(user_id, movie_id):
     """ Upon visiting this route, a specific movie will be removed from a user’s favorite movie list """
-    pass
+    # movie = Movie.query.get(movie_id)
+    # user = User.query.get(user_id)
+    user = db.session.query(User).get(user_id)
+    movie = db.session.query(Movie).get(movie_id)
+    delete = request.form.get('delete')
+    msg = f'Are you sure you want to delete this movie from your favourite movies.'
+
+
+    if delete == 'delete':
+        if user and movie:
+            user.movies.remove(movie)  # Remove the movie from the users movie list.
+            db.session.commit()
+            msg = f'The film " {movie.title} " was deleted from your favorite movies list.'
+            print("HIER!")
+            return render_template('delete_movie.html', movie=movie, user=user, msg=msg, display='none')
+        else:
+            print("User or Movie Not found")
+            return False
+    return render_template('delete_movie.html', movie=movie, user=user, msg=msg)
+
+
+
 
 
 
