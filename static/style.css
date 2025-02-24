@@ -1,19 +1,30 @@
 * {
   box-sizing: border-box;
-  margin: 0px;
-  padding: 0px;
 }
 
+body, html {
+    margin: 0px;
+    padding: 0px;
+    overflow-x: hidden;
+}
+
+/* GENERALS */
+h1, h2 {
+    margin: 0px;
+    line-height: 90%;
+}
 p {margin: 0px;}
+
+.flex_column_center_center {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 
 .container {
     padding-top: 10px;
     padding-bottom: 20px;
-}
-
-.list-group button {
-    background-color: transparent;
-    border: none;
 }
 
 .flex_center {
@@ -46,20 +57,62 @@ input[type="submit"]:active {
     margin-bottom: 20px;
 }
 
+/* LAYOUT MENU BAR */
+
+.bar_menu h2 {
+    margin: 10px 0px 10px 10px;
+}
+.bar_menu button {
+    border-radius: 5px 5px 0px 0px;
+    margin-right: 5px;
+}
+
+
+.list-group button {
+    background-color: transparent;
+    border: none;
+}
+
+.hello_user {
+    display: flex-block;
+    text-align: right;
+}
+
+
 /* INDEX */
-.index h1 {
+.index {
+    margin-top: 6vh;
+
+}
+.index .welcome {
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+}
+.index .welcome h1 {
+    width: 100%;
     text-align: center;
+    margin-bottom: 0px
 }
 .index div {
-    margin-top: 10px;
+    text-align: center;
+
+}
+.index section p {
+    padding: 10px;
     text-align: center;
 }
 
+
 .index .login-sign_up {
-    background-color: #C5F6FA;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #275459b;
+    margin-top: 50px;
     padding: 30px 0px;
     border-radius: 10px;
-    box-shadow: 5px 5px 10px 5px lightblue;
+    box-shadow: 3px 3px 10px 1px rgba(0,0,0,0.3);
 }
 .index .login-sign_up a {
     margin-top: 20px;
@@ -83,8 +136,9 @@ input[type="submit"]:active {
 
 }
 .div_form form ._input {
+    display: flex;
     padding: 20px 0px;
-
+    align-items: center;
 }
 .div_form form ._input input[type="text"] {
     margin: 0px 10px;
@@ -125,4 +179,27 @@ span {
 .show_movies .row .col .div_note p {
     font-size: 11px;
     color: gray;
+}
+
+
+/* MEDIA QUERIES*/
+@media (orientation: portrait) {
+    .flex_column_center_center {
+        justify-content: end;
+    }
+
+    .index .col {
+        display: flex;
+    }
+
+    ._input {
+        flex-direction: column;
+    }
+
+    .div_form form ._input input[type="text"] {
+        margin: 10px 0px;
+
+}
+
+
 }

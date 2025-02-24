@@ -15,13 +15,16 @@
 
 </head>
 <body>
-    <nav class="navbar bg-light">
-      <div class="container-fluid">
-        <ul class="navbar-nav">
-            <h2>MOVI WEB APP</h2>
-        </ul>
-      </div>
-    </nav>
+    <div class="bar_menu" style="background-color: gray">
+        <div class="row">
+            <div class="col-7">
+                <h2><b>MOVI WEB APP</b></h2>
+            </div>
+            <div class="col-5" style="display: flex; justify-content: end; align-items: end;">
+                <a href="/"><button type="button" class="btn btn-secondary">home</button></a>
+            </div>
+        </div>
+    </div>
     <div class="container">
         {% block content %}{% endblock %}
     </div>

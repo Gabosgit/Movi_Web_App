@@ -12,13 +12,14 @@ user movies
   <section>
     <div class="row">
       <div class="col">
-        <h1>USER MOVIES</h1>
+        <h1>USER</h1>
+        <h2>favorite movies</h2>
       </div>
-      <div class="col" style="display: flex-block; text-align: right;"><p>
-        <b>Hello {{ user.user_name }} !!!</b></p>
-        <p>Click here to add a movie.</p>
-        <form action="/users/{{ user.user_id }}/add_movie" method="POST">
-          <button type="submit" class="btn btn-info" name="user_id" value="{{ user.user_id }}">add movie</button>
+      <div class="col order-sm-1 hello_user"><p>
+        <b>Hello {{ user.name }} !!!</b></p>
+        <p>Click here to</p>
+        <form action="/users/{{ user.id }}/add_movie" method="POST">
+          <button type="submit" class="btn btn-success" name="user_id" value="{{ user.id }}">add a movie</button>
         </form>
       </div>
     </div>
@@ -26,15 +27,14 @@ user movies
 
   <section>
     <div class="">
-      <h4>Your movies</h4>
       {% for movie in movies %}
         <div class="row movie_in_list">
-          <div class="col">
-            <img src="{{ poster_url }}">
-            <h4>{{ movie.movie_title }}</h4>
-            <span>{{ movie.release_year }}</span>
+          <div class="col flex_column_center_center" style="padding: 0px;">
+            <img src="{{ movie.poster }}" alt="The cover is not available" style="max-height: 80%;">
           </div>
-          <div class="col">
+          <div class="col flex_column_center_center" style="text-align: center;">
+            <h1>{{ movie.title }}</h1>
+            <span>{{ movie.year }}</span>
             <table class="table">
               <thead>
                 <tr>
@@ -45,19 +45,22 @@ user movies
               </thead>
               <tbody>
                 <tr>
-                  <td>{{ movie.movie_genre }}</td>
-                  <td>{{ movie.director.director_name }}</td>
+                  <td>{{ movie.genre }}</td>
+                  <td>{{ movie.director.name }}</td>
                   <td>{{ movie.rating }}
               </tbody>
             </table>
-          </div>
-           <div class="col" style="display: flex; justify-content: center; align-items: center; ">
-             <form action="" method="POST">
+            <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+              <form action="" method="POST">
                <button type="button" class="btn btn-warning" href="/users/<user_id>/update_movie/<movie_id>" name="update" value="update" >update</button>
-             </form>
-             <form action="" method="POST">
-               <button type="button" class="btn btn-danger" href="/users/<user_id>/delete_movie/<movie_id>" name="delete" value="delete">delete</button>
-             </form>
+              </form>
+              <form action="" method="POST" style="margin: 0px 10px;">
+               <button type="button" class="btn btn-danger" href="/users/<user_id>/update_movie/<movie_id>" name="delete" value="delete">delete</button>
+              </form>
+              <form action="" method="POST">
+              <button type="button" class="btn btn-info" href="/users/<user_id>/info_movie/<movie_id>" name="info" value="info">&nbsp;&nbsp;&nbsp;Info&nbsp;&nbsp;&nbsp;</button>
+              </form>
+            </div>
           </div>
         </div>
       {% endfor %}

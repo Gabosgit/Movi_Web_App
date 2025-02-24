@@ -28,6 +28,7 @@ def fetch_data(movie_title):
     response = requests.get(API_URL)
     if response.status_code == requests.codes.ok:
         json_data = response.json()
+        print(json_data)
         return json_data
     else:
         print("Error:", response.status_code, response.text)
@@ -38,7 +39,7 @@ def fetch_data(movie_title):
 def home():
     """ home page of the application """
 
-    return render_template('index.html')
+    return render_template('index.html', display='none')
 
 
 @app.route('/users', methods=['GET', 'POST'])
@@ -50,7 +51,7 @@ def list_users():
             search_name = request.form.get('search_name')
 
             if search_name:
-                users = User.query.filter(User.user_name.like(f"%{search_name}%")).all()
+                users = User.query.filter(User.name.like(f"%{search_name}%")).all()
             else:
                 # Get all records from the 'User' table
                 users = User.query.all()
@@ -79,9 +80,6 @@ def user_movies(user_id):
 
     user = User.query.get(user_id)
     movies = user.movies
-    for movie in movies:
-        print(movie.movie_title, movie.movie_genre, movie.release_year, movie.rating, movie.director)
-    print()
     return render_template('user_movies.html', user=user, movies=movies)
 
 
@@ -90,7 +88,7 @@ def add_user():
     """ Presents a form that enables the addition of a new user to the Movie Web App """
     if request.method == 'POST':
         new_user_name = request.form.get('user_name')
-        new_user = User(user_name = new_user_name)
+        new_user = User(name = new_user_name)
         if new_user_name:
             with app.app_context():
                 db.session.add(new_user)
@@ -102,56 +100,65 @@ def add_user():
 
 def get_needed_data(data_movie):
     """ Filter the necessary data from the external IPA """
-    poster_url = data_movie['Poster']
-    title = data_movie['Title']
-    year = data_movie['Year']
-    genre = data_movie['Genre']
-    director = data_movie['Director']
+    if data_movie['Response'] == 'False':
+        data = {
+            'poster_url': '',
+            'title': "NOT FOUND",
+            'year': '',
+            'genre': '',
+            'director': '',
+            'rating': ''
+        }
+    else:
+        poster = data_movie['Poster']
+        print(poster)
+        title = data_movie['Title']
+        year = data_movie['Year']
+        genre = data_movie['Genre']
+        director = data_movie['Director']
 
-    try:
-        rating = float(data_movie['Ratings'][0]['Value'][:-3])
-    except IndexError as e:
-        print(e)
-        rating = 'N/A'
+        try:
+            rating = float(data_movie['Ratings'][0]['Value'][:-3])
+        except IndexError as e:
+            print(e)
+            rating = 'N/A'
 
-    data = {
-        'poster_url': poster_url,
-        'title': title,
-        'year': year,
-        'genre': genre,
-        'director': director,
-        'rating': rating
-    }
+        data = {
+            'poster': poster,
+            'title': title,
+            'year': year,
+            'genre': genre,
+            'director': director,
+            'rating': rating
+        }
     return data
 
 
 def add_director_return_record_id(director_name):
     with app.app_context():
         add_director_record = Director(
-            director_name=director_name
+            name=director_name
         )
         db.session.add(add_director_record)
         db.session.commit()  # commits the session to the DB.
-        id_director = add_director_record.director_id
+        id_director = add_director_record.id
         return id_director
-
-
- # Function to add a connection
 
 
 def add_movie_return_record_id(director_id, data):
     with app.app_context():
         add_movie_record = Movie(
-            movie_title=data['title'],
-            movie_genre=data['genre'],
-            release_year=data['year'],
+            title=data['title'],
+            genre=data['genre'],
+            year=data['year'],
             rating=data['rating'],
+            poster=data['poster'],
             director_id=director_id
         )
 
         db.session.add(add_movie_record)
         db.session.commit()  # commits the session to the DB.
-        id_new_movie = add_movie_record.movie_id
+        id_new_movie = add_movie_record.id
         return id_new_movie
 
 
@@ -177,28 +184,19 @@ def add_movie(user_id):
     if request.method == 'POST':
         movie_title = request.form.get('movie_title')
         add_this_movie = request.form.get('add_this_movie')
-        print(user)
         from_ipa_fetched_data = fetch_data(movie_title)
         data = get_needed_data(from_ipa_fetched_data)
 
         if not movie_title is None:
+            data = get_needed_data(from_ipa_fetched_data)
             if from_ipa_fetched_data['Response'] == 'False':
-                data = {
-                    'poster_url': '',
-                    'title': "NOT FOUND",
-                    'year': '',
-                    'genre': '',
-                    'director': '',
-                    'rating': ''
-                }
-                msg =f'No movie with the search entry "{movie_title}" was found.'
+                msg = f'No movie with the search entry "{movie_title}" was found.'
             else:
-                data = get_needed_data(from_ipa_fetched_data)
                 msg = f'Here is the film found with the search entry "{movie_title}"'
 
-            return render_template('add_movie.html', user_id=user_id, user_name=user.user_name, data=data, msg=msg)
+            return render_template('add_movie.html', user_id=user_id, user=user, movie=data, msg=msg)
 
-        if add_this_movie:
+        elif add_this_movie:
             from_ipa_fetched_data = fetch_data(add_this_movie)
             data = get_needed_data(from_ipa_fetched_data)
             msg = f'"{add_this_movie}" was added to your movie list!'
@@ -212,9 +210,12 @@ def add_movie(user_id):
             # Adds the movie in the association list user.movies
             connect_user_movie(user_id, id_new_movie)
 
-            return render_template("user_movies.html", user_id=user_id, user=user, data=data, msg=msg)
+            #user = User.query.get(user_id)
+            movies = user.movies
 
-    return render_template('add_movie.html', user_id=user_id, user_name=user.user_name, data=data, msg=msg)
+            return render_template("user_movies.html", user_id=user_id, user=user, movies=movies, msg=msg)
+
+    return render_template('add_movie.html', user_id=user_id, user=user, movie=data, msg=msg)
 
 
 @app.route('/users/<user_id>/update_movie/<movie_id>')

@@ -9,37 +9,53 @@ Add Author
 {% block content %}
 <!-- the content in the layout -->
 <div class="container">
-  <div class="div_form">
-    <form action="/users/{{ user_id }}/add_movie" method="POST">
-      <h1>Search for a movie!</h1>
-      <p><b>{{ user_name }}</b>, enter the title of the movie you are looking for.</p>
-      <div class="_input">
-        <label for="movie_title"><b>movie title:</b></label>
-        <input type="text" id="movie_title" name="movie_title" required placeholder=" Enter a movie title ...">
-        <input type="submit" value="search">
+  <div class="row">
+    <div class="col-sm-3">
+    </div>
+    <div class="col-sm-6">
+      <div class="div_form">
+        <form action="/users/{{ user.id }}/add_movie" method="POST">
+          <h1>Search for a movie!</h1>
+          <div class="_input">
+            <label for="movie_title" ><b>movie title:</b></label>
+            <input type="text" id="movie_title" name="movie_title" required placeholder=" Enter a movie title ...">
+            <button type="submit" class="btn btn-success" >search</button>
+          </div>
+          <div class="msg">
+            <p>{{ msg }}</p>
+          </div>
+        </form>
       </div>
-      <div class="msg">
-        <p>{{ msg }}</p>
+    </div>
+    <div class="col-sm-3">
+      <div class="col hello_user"><p>
+        <b>Hello {{ user.name }} !!!</b></p>
+        <p>Click here to see your</p>
+        <form action="/users/{{ user.id }}" method="GET">
+          <button type="submit" class="btn btn-primary" name="user_id" value="{{ user.id }}">favorite movies</button>
+        </form>
       </div>
-    </form>
+    </div>
   </div>
 </div>
 
-<div class="container show_movies">
+<div class="show_movies">
   <div class="row">
     <div class="col">
-      <div class="poster"><img src="{{ data.poster_url }}" alt="The cover is not available" ></div>
+      <div class="poster">
+        <img src="{{ movie.poster }}" alt="The cover is not available">
+      </div>
     </div>
     <div class="col">
-      <div class="title"><p><h1>{{ data.title }} <span> {{ data.year }}</span></h1></div>
+      <div class="title"><p><h1>{{ movie.title }} <span> {{ movie.year }}</span></h1></div>
       <div class="movie_info">
-        <p>rating: <span>{{ data.rating }}</span></p>
-        <p>genre: <span>{{ data.genre }}</span></p>
-        <p>director: <span>{{ data.director }}</span></p>
+        <p>rating: <span>{{ movie.rating }}</span></p>
+        <p>genre: <span>{{ movie.genre }}</span></p>
+        <p>director: <span>{{ movie.director }}</span></p>
       </div>
       <div class="div_button">
         <form action="/users/{{ user_id }}/add_movie" method="POST">
-          <button type="submit" class="btn btn-warning" name="add_this_movie" value="{{ data.title }}">add movie</button>
+          <button type="submit" class="btn btn-warning" name="add_this_movie" value="{{ movie.title }}">add movie</button>
         </form>
       </div>
       <div class="div_note">

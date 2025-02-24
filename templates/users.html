@@ -18,7 +18,7 @@ Users
           <div class="_input">
               <label for="search_name"><b>user name:</b></label>
               <input type="text" id="search_name" name="search_name" placeholder=" Let empty for all users">
-              <input type="submit" value="login">
+              <button type="submit" class="btn btn-primary" >login</button>
           </div>
           <p>Select a <b>user</b> from the list.</p>
       </form>
@@ -27,8 +27,8 @@ Users
     <div class="list-group">
       <h4>Users list</h4>
       {% for user in users %}
-        <a href="/users/{{ user.user_id }}" class="list-group-item list-group-item-action">
-            <button name="user_id" value="{{ user.user_id }}">{{ user.user_id }} | {{ user.user_name }}</button>
+        <a href="/users/{{ user.id }}" class="list-group-item list-group-item-action">
+            <button name="user_id" value="{{ user.id }}">{{ user.id }} | {{ user.name }}</button>
         </a>
       {% endfor %}
     </div>
