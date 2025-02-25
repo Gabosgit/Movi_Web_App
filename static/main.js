@@ -1,7 +1,6 @@
 const btn_description = document.getElementById('btn_description');
-
-
 const btn_bio = document.getElementById('btn_bio');
+const form_update = document.getElementById('form_update');
 
 
 btn_description.addEventListener('click', async function() {
@@ -32,10 +31,39 @@ btn_bio.addEventListener('click', async function() {
                 });
                 const data = await response.json();
                 document.getElementById('text_bio').textContent = data.response;
-                document.getElementById('birth').textContent = data.birth;
-                document.getElementById('death').textContent = data.death;
+                document.getElementById('birth').value = data.birth;
+                document.getElementById('death').value = data.death;
             } catch (error) {
                 console.error("Error:", error);
                 document.getElementById('movie_description').textContent = "An error occurred.";
             }
+});
+
+
+
+
+form_update.addEventListener('submit', function(event) {
+  event.preventDefault(); // Prevent standard form submission
+
+  const formData = new FormData(form_update);
+  const data = {};
+  formData.forEach((value, key) => {
+    data[key] = value;
+  });
+
+  fetch(route, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+    .then(response => response.json())
+    .then(result => {
+      console.log('Success:', result);
+      //Handle the response.
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
 });

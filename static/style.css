@@ -277,6 +277,26 @@ span {
     width: auto;
     margin-top: 20px;
 }
+.update .bio_description label {
+    font-size: 25px;
+
+}
+.update .bio_description span {
+    font-size: 16px;
+}
+
+.update .bio_description .bio {
+    margin-top: 60px;
+}
+
+.update .bio_description .bio .col {
+    margin: auto;
+}
+.update .bio_description .bio input {
+    width: 100px;
+    text-align: center;
+
+}
 
 
 

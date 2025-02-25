@@ -35,7 +35,6 @@ def fetch_data(movie_title):
         return False
 
 
-
 def get_needed_data(data_movie):
     """ Filter the necessary data from the external IPA """
     if data_movie['Response'] == 'False':
@@ -114,6 +113,28 @@ def connect_user_movie(user_id, id_new_movie):
             return True
         else:
             return False
+
+
+def update_info(data, movie):
+        update_data = {}
+        for k, v in data.items():
+            update_data[k] = v
+
+        print(update_data)
+
+        if update_data['description']:
+            movie.description = update_data['description']
+        if update_data['rating']:
+            movie.rating = update_data['rating']
+        if update_data['genre']:
+            movie.genre = update_data['genre']
+        if update_data['bio']:
+            movie.director.bio = update_data['bio']
+        if update_data['birth']:
+            movie.director.birth = update_data['birth']
+        if update_data['death']:
+            movie.director.death = update_data['death']
+        db.session.commit()
 
 
 @app.route('/')
@@ -201,7 +222,6 @@ def add_movie(user_id):
         data = get_needed_data(from_ipa_fetched_data)
 
 
-
         if not movie_title is None:
             data = get_needed_data(from_ipa_fetched_data)
             if from_ipa_fetched_data['Response'] == 'False':
@@ -284,19 +304,17 @@ def delete_movie(user_id, movie_id):
 @app.route('/users/<user_id>/update_movie/<movie_id>', methods=['GET', 'POST'])
 def update_movie(user_id, movie_id):
     """ displays a form allowing for the updating of details of a specific movie in a user’s list """
-    movie = db.session.query(Movie).get(movie_id)
-    user = db.session.query(User).get(user_id)
-    description = movie.description
+    movie = db.get_or_404(Movie, movie_id)
+    user = db.get_or_404(User, user_id)
     bio = movie.director.bio
-    birth = ''
-    death = ''
+
 
     if request.method == 'POST':
         data = request.get_json()  # Parse the JSON from the request body
         prompt = data.get('prompt')  # Access the 'prompt' value
 
         if not prompt:
-            return jsonify({"error": "Prompt is required"}), 400
+            update_info(data, movie)
 
         if prompt == 'bio':
             prompt = f"Get a short text about the biography of the director of the movie '{movie.title}', '{movie.director.name}'."
@@ -320,10 +338,7 @@ def update_movie(user_id, movie_id):
                 print(f"Error calling Gemini API: {e}")
                 return jsonify({"error": "Failed to generate text"}), 500
 
-    return render_template('update_movie.html', user=user, movie=movie, description=description, bio=bio)
-
-
-
+    return render_template('update_movie.html', user=user, movie=movie, bio=bio)
 
 
 if __name__ == '__main__':
