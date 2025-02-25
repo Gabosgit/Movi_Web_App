@@ -273,7 +273,7 @@ span {
     width: 100%;
     text-align: center;
 }
-.update .div_form form button[type='submit'] {
+.update .div_form form .div_update_submit button[type='submit'] {
     width: auto;
     margin-top: 20px;
 }

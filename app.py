@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify
 from datamanager.data_models import db, User, Movie, Review, Director, Genre, user_movie_association
 import os
 from dotenv import load_dotenv
@@ -35,10 +35,90 @@ def fetch_data(movie_title):
         return False
 
 
+
+def get_needed_data(data_movie):
+    """ Filter the necessary data from the external IPA """
+    if data_movie['Response'] == 'False':
+        data = {
+            'poster_url': '',
+            'title': "NOT FOUND",
+            'year': '',
+            'genre': '',
+            'director': '',
+            'rating': '',
+            'description': ''
+        }
+    else:
+        poster = data_movie['Poster']
+        title = data_movie['Title']
+        year = data_movie['Year']
+        genre = data_movie['Genre']
+        director = data_movie['Director']
+        description = data_movie['Plot']
+
+        try:
+            rating = float(data_movie['Ratings'][0]['Value'][:-3])
+        except IndexError as e:
+            print(e)
+            rating = 'N/A'
+
+        data = {
+            'poster': poster,
+            'title': title,
+            'year': year,
+            'genre': genre,
+            'director': director,
+            'rating': rating,
+            'description': description
+        }
+    return data
+
+
+def add_director_return_record_id(director_name):
+    with app.app_context():
+        add_director_record = Director(
+            name=director_name
+        )
+        db.session.add(add_director_record)
+        db.session.commit()  # commits the session to the DB.
+        id_director = add_director_record.id
+        return id_director
+
+
+def add_movie_return_record_id(director_id, data):
+    with app.app_context():
+        add_movie_record = Movie(
+            title=data['title'],
+            genre=data['genre'],
+            year=data['year'],
+            rating=data['rating'],
+            poster=data['poster'],
+            director_id=director_id,
+            description=data['description']
+        )
+
+        db.session.add(add_movie_record)
+        db.session.commit()  # commits the session to the DB.
+        id_new_movie = add_movie_record.id
+        return id_new_movie
+
+
+def connect_user_movie(user_id, id_new_movie):
+    with app.app_context():
+        user = User.query.get(user_id)
+        movie = Movie.query.get(id_new_movie)
+
+        if user and movie:
+            user.movies.append(movie)
+            db.session.commit()
+            return True
+        else:
+            return False
+
+
 @app.route('/')
 def home():
     """ home page of the application """
-
     return render_template('index.html', display='none')
 
 
@@ -108,88 +188,10 @@ def add_user():
     return render_template('add_user.html')
 
 
-def get_needed_data(data_movie):
-    """ Filter the necessary data from the external IPA """
-    if data_movie['Response'] == 'False':
-        data = {
-            'poster_url': '',
-            'title': "NOT FOUND",
-            'year': '',
-            'genre': '',
-            'director': '',
-            'rating': ''
-        }
-    else:
-        poster = data_movie['Poster']
-        title = data_movie['Title']
-        year = data_movie['Year']
-        genre = data_movie['Genre']
-        director = data_movie['Director']
-
-        try:
-            rating = float(data_movie['Ratings'][0]['Value'][:-3])
-        except IndexError as e:
-            print(e)
-            rating = 'N/A'
-
-        data = {
-            'poster': poster,
-            'title': title,
-            'year': year,
-            'genre': genre,
-            'director': director,
-            'rating': rating
-        }
-    return data
-
-
-def add_director_return_record_id(director_name):
-    with app.app_context():
-        add_director_record = Director(
-            name=director_name
-        )
-        db.session.add(add_director_record)
-        db.session.commit()  # commits the session to the DB.
-        id_director = add_director_record.id
-        return id_director
-
-
-def add_movie_return_record_id(director_id, data):
-    with app.app_context():
-        add_movie_record = Movie(
-            title=data['title'],
-            genre=data['genre'],
-            year=data['year'],
-            rating=data['rating'],
-            poster=data['poster'],
-            director_id=director_id
-        )
-
-        db.session.add(add_movie_record)
-        db.session.commit()  # commits the session to the DB.
-        id_new_movie = add_movie_record.id
-        return id_new_movie
-
-
-def connect_user_movie(user_id, id_new_movie):
-    with app.app_context():
-        user = User.query.get(user_id)
-        movie = Movie.query.get(id_new_movie)
-
-        if user and movie:
-            user.movies.append(movie)
-            db.session.commit()
-            return True
-        else:
-            return False
-
-
 @app.route('/users/<user_id>/add_movie', methods=['GET', 'POST'])
 def add_movie(user_id):
     msg = ''
     user = User.query.get(user_id)
-
-
     data = {}
 
     if request.method == 'POST':
@@ -197,6 +199,8 @@ def add_movie(user_id):
         add_this_movie = request.form.get('add_this_movie')
         from_ipa_fetched_data = fetch_data(movie_title)
         data = get_needed_data(from_ipa_fetched_data)
+
+
 
         if not movie_title is None:
             data = get_needed_data(from_ipa_fetched_data)
@@ -281,11 +285,44 @@ def delete_movie(user_id, movie_id):
 def update_movie(user_id, movie_id):
     """ displays a form allowing for the updating of details of a specific movie in a user’s list """
     movie = db.session.query(Movie).get(movie_id)
-    movie_description = fetch_from_gemini("Film director of the movie 'it', Andy Muschietti")
-    director_bio = fetch_from_gemini("description of the movie 'It'. Film director Andy Muschietti")
+    user = db.session.query(User).get(user_id)
+    description = movie.description
+    bio = movie.director.bio
+    birth = ''
+    death = ''
+
+    if request.method == 'POST':
+        data = request.get_json()  # Parse the JSON from the request body
+        prompt = data.get('prompt')  # Access the 'prompt' value
+
+        if not prompt:
+            return jsonify({"error": "Prompt is required"}), 400
+
+        if prompt == 'bio':
+            prompt = f"Get a short text about the biography of the director of the movie '{movie.title}', '{movie.director.name}'."
+            birth = f"Get only the birthday data without extra text in the format day/month/year of the director of the movie '{movie.title}', '{movie.director.name}'."
+            death = f"Get only the death day data without extra text in the format day/month/year of the director of the movie '{movie.title}', '{movie.director.name}'."
+            try:
+                response = fetch_from_gemini(prompt)
+                birthday = fetch_from_gemini(birth)
+                death_day = fetch_from_gemini(death)
+                return jsonify({"response": response.text, "birth": birthday.text, "death": death_day.text})
+            except Exception as e:
+                print(f"Error calling Gemini API: {e}")
+                return jsonify({"error": "Failed to generate text"}), 500
+
+        elif prompt == 'description':
+            prompt = f"Get a short text about the movie '{movie.title}' of the director '{movie.director.name}'."
+            try:
+                response = fetch_from_gemini(prompt)
+                return jsonify({"response": response.text})
+            except Exception as e:
+                print(f"Error calling Gemini API: {e}")
+                return jsonify({"error": "Failed to generate text"}), 500
+
+    return render_template('update_movie.html', user=user, movie=movie, description=description, bio=bio)
 
 
-    return render_template('update_movie.html', movie=movie)
 
 
 

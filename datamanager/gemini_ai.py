@@ -2,6 +2,7 @@ from google import genai
 import os
 from dotenv import load_dotenv
 
+
 #loads variables from the .env file into the environment
 load_dotenv()
 # os.getenv() to access the environment variables loaded from the .env file
@@ -13,6 +14,6 @@ client = genai.Client(api_key=API_KEY)
 def fetch_from_gemini(prompt):
     response = client.models.generate_content(
         model="gemini-2.0-flash",
-        contents=f"Get a short text of the {prompt}"
+        contents={prompt}
     )
-    return response.text
+    return response

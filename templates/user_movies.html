@@ -52,8 +52,8 @@ user movies
             </tbody>
           </table>
           <div class="movie_options">
-            <form action="/users/{{ user.id }}/update_movie/{{ movie.id }}" method="POST">
-             <button type="submit" class="btn btn-warning" href="/users/{{ user.id }}/info_movie/{{ movie.id }}" name="update" value="update" >update</button>
+            <form action="/users/{{ user.id }}/update_movie/{{ movie.id }}" method="GET">
+             <button type="submit" class="btn btn-warning" name="update" value="update" >update</button>
             </form>
 
             <!-- Button to Open the Modal -->
