@@ -50,6 +50,7 @@ class Movie(db.Model):
     year: Mapped[str] = mapped_column(nullable=True)
     rating: Mapped[int] = mapped_column(nullable=True)
     poster: Mapped[str] = mapped_column(nullable=True)
+    description: Mapped[str] = mapped_column(nullable=True)
     reviews: Mapped[list["Review"]] = relationship(back_populates="movie")
     director_id: Mapped[int] = mapped_column(ForeignKey('director.id'))
     director: Mapped["Director"] = relationship(back_populates="movies")

@@ -28,16 +28,27 @@ user movies
           <input type="text" id="genre" name="genre" placeholder="{{ movie.genre }}">
         </div>
 
-        <div class="col">
-          <label for="description"><b>Description</b></label>
-          <textarea class="form-control" rows="5" id="description" name="text">{{ movie.description }}
-          </textarea>
+        <div class="description">
+          <label for="description"><b>DESCRIPTION</b></label>
+          <textarea class="form-control" rows="5" id="description" name="text">{{ movie.description }}</textarea>
+          <div style="display: block">
+            If the DESCRIPTION is missing, click <button type="button" class="btn btn-info">get description</button> to retrieve the information with the GEMINI AI API.
+          </div>
         </div>
 
-        <div>
-          <label for="bio_director"><b>Bio Director</b></label>
-          <textarea class="form-control" rows="5" id="bio_director" name="text">{{ movie.description }}
-          </textarea>
+        <div class="bio">
+          <label for="bio_director"><b>BIO DIRECTOR</b> " {{ movie.director.name }} "</label>
+          <div>
+            <p>
+              <b>birth date: </b> {{ movie.director.birth }}
+              <b>death date</b> {{ movie.director.death }}
+            </p>
+          </div>
+          <textarea class="form-control" rows="5" id="bio_director" name="text">{{ movie.description }}</textarea>
+          <div>
+            If the BIO is missing, click <button type="button" class="btn btn-info">get bio</button> to retrieve the information with the GEMINI AI API.
+          </div>
+
         </div>
         <div class="div_update_submit">
           <button type="submit" class="btn btn-warning">Submit</button>

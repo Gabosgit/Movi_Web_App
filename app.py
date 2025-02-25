@@ -3,6 +3,7 @@ from datamanager.data_models import db, User, Movie, Review, Director, Genre, us
 import os
 from dotenv import load_dotenv
 import requests
+from datamanager.gemini_ai import fetch_from_gemini
 
 app = Flask(__name__)
 
@@ -280,6 +281,9 @@ def delete_movie(user_id, movie_id):
 def update_movie(user_id, movie_id):
     """ displays a form allowing for the updating of details of a specific movie in a user’s list """
     movie = db.session.query(Movie).get(movie_id)
+    movie_description = fetch_from_gemini("Film director of the movie 'it', Andy Muschietti")
+    director_bio = fetch_from_gemini("description of the movie 'It'. Film director Andy Muschietti")
+
 
     return render_template('update_movie.html', movie=movie)
 

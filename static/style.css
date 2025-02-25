@@ -123,34 +123,34 @@ input[type="submit"]:active {
 }
 
 /* ADD USER */
-.div_form {
+.add_user {
     display: flex;
     align-content: center;
     justify-content: center;
 }
-.div_form form {
+.add_user form {
     display: block;
     width: auto;
     padding: 10px 0px;
     text-align: center;
 }
-.div_form form p {
+.add_user form p {
     margin-top: 10px;
 }
-.div_form form h1 {
+.add_user form h1 {
     text-align: center;
 
 }
-.div_form form ._input {
+.add_user form ._input {
     display: flex;
     padding: 20px 0px;
     align-items: center;
 }
-.div_form form ._input input[type="text"] {
+.add_user form ._input input[type="text"] {
     margin: 0px 10px;
 
 }
-.div_form form .msg p {
+.add_user form .msg p {
     color: #56ABB3;
 
 }
@@ -265,14 +265,20 @@ span {
     margin: 10px 0px;
     
 }
-.update .div_form form button {
-    width: auto;
-    margin-top: 20px;
+.update .div_form form textarea {
+    margin-bottom: 10px;
+
 }
 .update .div_form form .div_update_submit {
     width: 100%;
     text-align: center;
 }
+.update .div_form form button[type='submit'] {
+    width: auto;
+    margin-top: 20px;
+}
+
+
 
 
 /* MEDIA QUERIES*/
