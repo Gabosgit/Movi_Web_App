@@ -21,7 +21,7 @@ Add Author
     </form>
   </div>
   <div class="flex_center" style="display: {{ display }};">
-    <p><b>yes, delete it.</b></p>
+    <p><b>Delete movie</b></p>
     <form action="/users/{{ user.id }}/delete_movie/{{ movie.id }}" method="POST">
       <button type="submit" class="btn btn-danger" name="delete" value="delete">delete</button>
     </form>

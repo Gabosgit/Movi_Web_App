@@ -25,6 +25,7 @@ p {margin: 0px;}
 .container {
     padding-top: 30px;
     padding-bottom: 20px;
+    width: 70vw;
 }
 
 .flex_center {
@@ -225,14 +226,60 @@ span {
     margin-top: 20px;
 }
 
+/* UPDATE MOVIE*/
+.update .div_form form .update_img {
+    text-align: right;
+
+}
+
+.update .div_form form .update_img img {
+    height: 40vh;
+    width: auto;
+}
 
 
+.update .movie_title {
+    margin: 10px 0px;
+    
+}
+.update .movie_title h1 {
+    padding: 0px;
+    
+}
+.update .div_form {
+    display: block;
+    
+}
+.update .div_form form {
+    text-align: left;
+    display: block;
+}
+.update .div_form form .row .col-6 {
 
-
+}
+.update .div_form form label {
+    margin-top: 20px;
+    
+}
+.update .div_form form input {
+    margin: 10px 0px;
+    
+}
+.update .div_form form button {
+    width: auto;
+    margin-top: 20px;
+}
+.update .div_form form .div_update_submit {
+    width: 100%;
+    text-align: center;
+}
 
 
 /* MEDIA QUERIES*/
 @media (orientation: portrait) {
+    .container {
+        width: 90vw;
+    }
     .flex_column_center_center {
         justify-content: end;
     }
@@ -250,5 +297,13 @@ span {
 
 }
 
+    .update .div_form form .update_img {
+    text-align: center;
+
+    .update .div_form .update_img img {
+        height: auto;
+        width: 70vw;
+    }
+}
 
 }

@@ -276,10 +276,12 @@ def delete_movie(user_id, movie_id):
     return render_template('delete_movie.html', movie=movie, user=user, msg=msg)
 
 
-@app.route('/users/<user_id>/update_movie/<movie_id>')
-def update_movie():
+@app.route('/users/<user_id>/update_movie/<movie_id>', methods=['GET', 'POST'])
+def update_movie(user_id, movie_id):
     """ displays a form allowing for the updating of details of a specific movie in a user’s list """
-    return render_template('upload_movie.html')
+    movie = db.session.query(Movie).get(movie_id)
+
+    return render_template('update_movie.html', movie=movie)
 
 
 
