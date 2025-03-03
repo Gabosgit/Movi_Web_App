@@ -32,11 +32,8 @@ p {margin: 0px;}
     display: flex;
     flex-direction: column;
     justify-content: center;
-}
-.flex_center {
     text-align: center;
 }
-
 
 /* GENERAL INPUTS */
 input[type="submit"] {
@@ -63,15 +60,14 @@ input[type="submit"]:active {
 }
 
 /* LAYOUT MENU BAR */
-
 .bar_menu h2 {
     margin: 10px 0px 10px 10px;
+
 }
 .bar_menu button {
     border-radius: 5px 5px 0px 0px;
     margin-right: 5px;
 }
-
 
 .list-group button {
     background-color: transparent;
@@ -122,6 +118,40 @@ input[type="submit"]:active {
 
 }
 
+/* USERS */
+.users .div_form form p {
+    margin-top: 10px;
+
+}
+.users .div_form form .msg {
+    color: #56ABB3;
+
+}
+.users .div_form form input {
+    margin: 20px 0px;
+
+}
+.users .list-group .space_between {
+    display: flex;
+    justify-content: space-between;
+}
+.users .list-group .btn_user_id {
+}
+.users .list-group .list-group-item {
+    padding: 2px;
+}
+.users .list-group .btn_delete_user {
+
+}
+.users .list-group .btn-light {
+    color: red;
+}
+
+
+
+
+
+
 /* ADD USER */
 .add_user {
     display: flex;
@@ -136,6 +166,7 @@ input[type="submit"]:active {
 }
 .add_user form p {
     margin-top: 10px;
+
 }
 .add_user form h1 {
     text-align: center;
@@ -157,15 +188,14 @@ input[type="submit"]:active {
 
 
 /* USER MOVIES */
-
 .section_movie .col_movie {
     padding: 40px;
+
 }
 .section_movie .row_movie {
     display: flex;
     height: 100%
 }
-
 .section_movie .col_content{
     display: flex;
     flex-direction: column;
@@ -174,6 +204,7 @@ input[type="submit"]:active {
 }
 .section_movie .table {
     margin-top: auto;
+
 }
 .section_movie .movie_options {
     display: flex;
@@ -195,7 +226,7 @@ input[type="submit"]:active {
     font-size: 20px;
 
 }
-span {
+.show_movies span {
     font-size: 20px;
     color: gray;
 }
@@ -224,6 +255,7 @@ span {
 }
 ._delete .flex_center {
     margin-top: 20px;
+
 }
 
 /* UPDATE MOVIE*/
@@ -231,20 +263,17 @@ span {
     text-align: right;
 
 }
-
 .update .div_form form .update_img img {
     height: 40vh;
     width: auto;
 }
-
-
 .update .movie_title {
     margin: 10px 0px;
     
 }
 .update .movie_title h1 {
     padding: 0px;
-    
+
 }
 .update .div_form {
     display: block;
@@ -253,9 +282,6 @@ span {
 .update .div_form form {
     text-align: left;
     display: block;
-}
-.update .div_form form .row .col-6 {
-
 }
 .update .div_form form label {
     margin-top: 20px;
@@ -283,14 +309,15 @@ span {
 }
 .update .bio_description span {
     font-size: 16px;
-}
 
+}
 .update .bio_description .bio {
     margin-top: 60px;
-}
 
+}
 .update .bio_description .bio .col {
     margin: auto;
+
 }
 .update .bio_description .bio input {
     width: 100px;
@@ -299,6 +326,36 @@ span {
 }
 
 
+/* INFO */
+.info {
+    margin-bottom: 35px;
+}
+
+.info .poster {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.info .info_movie_data {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+}
+.info .content .info_movie_data .title {
+    margin-bottom: 20px;
+}
+
+.info .description {
+    margin: 20px 0px;
+}
+.info h2{
+    margin-bottom: 10px;
+}
+.info h2 span {
+    color: gray;
+}
 
 
 /* MEDIA QUERIES*/

@@ -11,7 +11,8 @@ Users
     <div class="div_form">
       <form action="" method="post">
           <h1>login</h1>
-          <p>Search for a <b>username</b>.<br>
+          <p>
+              Search for a <b>username</b>.<br>
               Empty field show <b>all users</b>.
           </p>
           <div class="_input">
@@ -19,16 +20,21 @@ Users
               <input type="text" id="search_name" name="search_name" placeholder=" Let empty for all users">
               <button type="submit" class="btn btn-primary" >login</button>
           </div>
-          <p>Select a <b>user</b> from the list.</p>
+          <p class="msg">{{ msg }}</p>
       </form>
     </div>
 
     <div class="list-group">
       <h4>Users list</h4>
       {% for user in users %}
-        <a href="/users/{{ user.id }}" class="list-group-item list-group-item-action">
-            <button name="user_id" value="{{ user.id }}">{{ user.id }} | {{ user.name }}</button>
-        </a>
+        <div class="list-group-item list-group-item-action space_between">
+            <a class="list-group-item-action btn_user_id" href="/users/{{ user.id }}">
+                <button name="user_id" value="{{ user.id }}">ID: {{ user.id }} | {{ user.name }}</button>
+            </a>
+            <form action="/users" method="POST">
+                <button type="submit" name="user_id" value="{{ user.id }}" class="btn btn-light btn_delete_user" data-bs-toggle="tooltip" title="If you click, the user will be permanently deleted." >delete</button>
+            </form>
+        </div>
       {% endfor %}
     </div>
 </div>

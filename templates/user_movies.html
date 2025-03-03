@@ -28,7 +28,7 @@ user movies
 <section class="section_movie">
   <div class="row">
     {% for movie in movies %}
-    <div class="col col_movie">
+    <div class="col-md-6 col_movie">
       <div class="row row_movie">
         <div class="col div_poster flex_column_center_center">
           <img src="{{ movie.poster }}" alt="The cover is not available" style="max-height: 80%;">
@@ -61,8 +61,8 @@ user movies
               <button type="submit" class="btn btn-danger" name="display" value="block">delete</button>
             </form>
 
-            <form action="/info/{{ movie.id }}" method="POST">
-            <button type="submit" class="btn btn-info" href="/users/{{ user.id }}/info_movie/{{ movie.id }}" name="info" value="info">&nbsp;&nbsp;&nbsp;Info&nbsp;&nbsp;&nbsp;</button>
+            <form action="/info/movie/{{ movie.id }}/user/{{ user.id }}" method="POST">
+            <button type="submit" class="btn btn-info" name="info" value="info">&nbsp;&nbsp;&nbsp;Info&nbsp;&nbsp;&nbsp;</button>
             </form>
           </div>
         </div>

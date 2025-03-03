@@ -120,8 +120,6 @@ def update_info(data, movie):
         for k, v in data.items():
             update_data[k] = v
 
-        print(update_data)
-
         if update_data['description']:
             movie.description = update_data['description']
         if update_data['rating']:
@@ -146,24 +144,41 @@ def home():
 @app.route('/users', methods=['GET', 'POST'])
 def list_users():
     """ Presents a list of all users registered in the Movie Web App"""
-    # Example within a Flask route or a function with an app context:
+    if request.method == 'POST':
+        user_id_to_delete = request.form.get('user_id')
+
+        if user_id_to_delete:
+            user_to_delete = db.get_or_404(User, user_id_to_delete)
+            db.session.delete(user_to_delete)
+            db.session.commit()
+
+            msg = f'{user_id_to_delete} | {user_to_delete.name}" was deleted from the users list.'
+            users = User.query.all()
+            return render_template('users.html', users=users, msg=msg)
+
     with app.app_context():
         if request.method == 'POST':
             search_name = request.form.get('search_name')
 
             if search_name:
                 users = User.query.filter(User.name.like(f"%{search_name}%")).all()
+                msg = f"Select a user from the list."
+                if not users:
+                    msg = f"No user was found with the name {search_name}"
+                    users = User.query.all()
             else:
                 # Get all records from the 'User' table
                 users = User.query.all()
-            return render_template('users.html', users=users)
+                msg = "Select a user from the list."
+            return render_template('users.html', users=users, msg=msg)
 
 
     # Get all records from the 'User' table
     users = User.query.all()
+    msg = "Select a user from the list."
 
             # Access other attributes of the User object as needed
-    return render_template('users.html', users=users)
+    return render_template('users.html', users=users, msg=msg)
 
 
 @app.route('/users/<user_id>')
@@ -281,8 +296,6 @@ def add_movie(user_id):
 @app.route('/users/<user_id>/delete_movie/<movie_id>', methods=['GET', 'POST'])
 def delete_movie(user_id, movie_id):
     """ Upon visiting this route, a specific movie will be removed from a user’s favorite movie list """
-    # movie = Movie.query.get(movie_id)
-    # user = User.query.get(user_id)
     user = db.session.query(User).get(user_id)
     movie = db.session.query(Movie).get(movie_id)
     delete = request.form.get('delete')
@@ -316,6 +329,7 @@ def update_movie(user_id, movie_id):
         if not prompt:
             update_info(data, movie)
 
+
         if prompt == 'bio':
             prompt = f"Get a short text about the biography of the director of the movie '{movie.title}', '{movie.director.name}'."
             birth = f"Get only the birthday data without extra text in the format day/month/year of the director of the movie '{movie.title}', '{movie.director.name}'."
@@ -340,6 +354,13 @@ def update_movie(user_id, movie_id):
 
     return render_template('update_movie.html', user=user, movie=movie, bio=bio)
 
+
+
+@app.route('/info/movie/<movie_id>/user/<user_id>', methods=['GET', 'POST'])
+def info_movie(movie_id, user_id):
+    movie = db.get_or_404(Movie, movie_id)
+    user = db.get_or_404(User, user_id)
+    return render_template('info_movie.html', movie=movie, user=user)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5002, debug=True)

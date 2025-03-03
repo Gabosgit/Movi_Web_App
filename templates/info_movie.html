@@ -1,0 +1,50 @@
+<!-- templates/index.html -->
+{% extends "layout.html" %}
+
+{% block title %}
+<!-- the title in layout.html -->
+Info Movie
+{% endblock %}
+
+{% block content %}
+<div class="info">
+    <div class="row">
+        <div class="col">
+            <h1><b>INFO MOVIE</b></h1>
+            <p>Here is the <b>info</b> of the movie</p>
+        </div>
+        <div class="col">
+            <div class="col hello_user"><p>
+                <b>Hello {{ user.name }} !!!</b></p>
+                <p>Click here to see your</p>
+                  <form action="/users/{{ user.id }}" method="GET">
+                        <button type="submit" class="btn btn-primary" name="user_id" value="{{ user.id }}">favorite movies</button>
+                  </form>
+            </div>
+        </div>
+    </div>
+    <div class="row content">
+        <div class="col-sm-4 poster">
+          <img src="{{ movie.poster }}" alt="The cover is not available" style="max-height: 80%;">
+        </div>
+        <div class="col-sm-8 info_movie_data">
+            <div class="title"><h1>{{ movie.title }} <span> {{ movie.year }}</span></h1></div>
+            <p><b>rating:</b> <span>{{ movie.rating }}</span></p>
+            <p><b>genre:</b> <span>{{ movie.genre }}</span></p>
+            <p><b>director:</b> <span>{{ movie.director.name }}</span></p>
+        </div>
+        <div class="col-sm-12 description">
+            <h2>Description</h2>
+            <p>{{ movie.description }}</p>
+        </div>
+        <div class="col-sm-12">
+            <h2>Biography <span> {{ movie.director.name }} </span></h2>
+            <p>{{ movie.director.bio }}</p>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}
