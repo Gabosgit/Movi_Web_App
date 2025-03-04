@@ -53,10 +53,9 @@ user movies
           </table>
           <div class="movie_options">
             <form action="/users/{{ user.id }}/update_movie/{{ movie.id }}" method="GET">
-             <button type="submit" class="btn btn-warning" name="update" value="update" >update</button>
+             <button type="submit" class="btn btn-warning">update</button>
             </form>
 
-            <!-- Button to Open the Modal -->
             <form action="/users/{{ user.id }}/delete_movie/{{ movie.id }}" method="post" style="margin: 0px 10px;">
               <button type="submit" class="btn btn-danger" name="display" value="block">delete</button>
             </form>

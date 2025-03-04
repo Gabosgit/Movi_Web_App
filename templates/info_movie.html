@@ -40,8 +40,28 @@ Info Movie
         <div class="col-sm-12">
             <h2>Biography <span> {{ movie.director.name }} </span></h2>
             <p>{{ movie.director.bio }}</p>
+            <p><b>Birthday:</b> {{ movie.director.birth }}</p>
+            <p><b>Death day:</b> {{ movie.director.death }}</p>
+        </div>
+        <div class="col-sm-12 reviews">
+            <h2>Movie Reviews</h2>
+            {% for review in reviews %}
+            <div class="review">
+                <div class="review_header">
+                    <p>Review of user <b>{{ dict_review_usernames[review.user_id] }}</b></p>
+                    <p>Rating by user: <b>{{ review.rating }}</b></p>
+                </div>
+                <div class="review_text">
+                    <p>{{ review.text }}</p>
+                </div>
+
+            </div>
+
+
+            {% endfor %}
         </div>
     </div>
+
 </div>
 
 

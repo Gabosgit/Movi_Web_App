@@ -26,8 +26,6 @@ user_movie_association = Table(
 )
 
 
-
-
 class User(db.Model):
     """  Each instance of mapped_column() generate a Column object """
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -70,7 +68,7 @@ class Review(db.Model):
     user_id: Mapped[int] = mapped_column(ForeignKey('user.id'), nullable=False)
     movie_id: Mapped[int] = mapped_column(ForeignKey('movie.id'), nullable=False)
     rating: Mapped[int] = mapped_column(nullable=True)
-    review_text: Mapped[str] = mapped_column(nullable=True)
+    text: Mapped[str] = mapped_column(nullable=True)
     user: Mapped["User"] = relationship(back_populates="reviews")
     movie: Mapped["Movie"] = relationship(back_populates="reviews")
 

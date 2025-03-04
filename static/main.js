@@ -1,6 +1,7 @@
 const btn_description = document.getElementById('btn_description');
 const btn_bio = document.getElementById('btn_bio');
 const form_update = document.getElementById('form_update');
+const form_review = document.getElementById('form_review');
 
 
 btn_description.addEventListener('click', async function() {
@@ -40,8 +41,6 @@ btn_bio.addEventListener('click', async function() {
 });
 
 
-
-
 form_update.addEventListener('submit', function(event) {
   event.preventDefault(); // Prevent standard form submission
 
@@ -67,3 +66,24 @@ form_update.addEventListener('submit', function(event) {
       console.error('Error:', error);
     });
 });
+
+form_review.addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent standard form submission
+
+    alert("ELLO")
+//    const formText = new FormData(form_review);
+//    const review = {};
+//
+//    formData.forEach((value, key) => {
+//    review[key] = value;
+//    });
+//
+//    fetch(route, {
+//        method: 'POST',
+//        headers: {
+//          'Content-Type': 'application/json',
+//        },
+//        body: JSON.stringify(review)
+//    })
+
+}

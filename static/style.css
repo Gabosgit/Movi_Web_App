@@ -263,10 +263,6 @@ input[type="submit"]:active {
     text-align: right;
 
 }
-.update .div_form form .update_img img {
-    height: 40vh;
-    width: auto;
-}
 .update .movie_title {
     margin: 10px 0px;
     
@@ -275,44 +271,49 @@ input[type="submit"]:active {
     padding: 0px;
 
 }
-.update .div_form {
-    display: block;
-    
+.update .cover_review .row .update_img {
+    display: flex;
+    height: 300px;
+    justify-content: center;
 }
-.update .div_form form {
+.update .cover_review .row .review {
+    display: flex;
+    align-items: center;
+}
+.update .bio_description {
+    margin-top: 50px;
+
+}
+.update .bio_description form {
     text-align: left;
     display: block;
 }
-.update .div_form form label {
+.update .bio_description form label {
     margin-top: 20px;
-    
+    font-size: 25px;
 }
-.update .div_form form input {
+.update .bio_description form input {
     margin: 10px 0px;
     
 }
-.update .div_form form textarea {
+.update .bio_description form textarea {
     margin-bottom: 10px;
 
 }
-.update .div_form form .div_update_submit {
+.update .bio_description .div_update_submit {
     width: 100%;
     text-align: center;
 }
-.update .div_form form .div_update_submit button[type='submit'] {
+.update .bio_description .div_update_submit button[type='submit'] {
     width: auto;
     margin-top: 20px;
-}
-.update .bio_description label {
-    font-size: 25px;
-
 }
 .update .bio_description span {
     font-size: 16px;
 
 }
-.update .bio_description .bio {
-    margin-top: 60px;
+.update .bio_description .bio, .description {
+    margin-top: 40px;
 
 }
 .update .bio_description .bio .col {
@@ -329,14 +330,13 @@ input[type="submit"]:active {
 /* INFO */
 .info {
     margin-bottom: 35px;
-}
 
+}
 .info .poster {
     display: flex;
     justify-content: center;
     align-items: center;
 }
-
 .info .info_movie_data {
     display: flex;
     flex-direction: column;
@@ -345,16 +345,58 @@ input[type="submit"]:active {
 }
 .info .content .info_movie_data .title {
     margin-bottom: 20px;
-}
 
+}
 .info .description {
     margin: 20px 0px;
+
 }
 .info h2{
     margin-bottom: 10px;
+
 }
 .info h2 span {
     color: gray;
+
+}
+.info .reviews {
+    margin-top: 50px;
+
+}
+.info .reviews .review {
+    padding: 20px;
+
+}
+.info .reviews .review .review_header {
+    display: flex;
+    justify-content: space-between;
+    background-color: #ffff99;
+    padding: 10px;
+}
+.info .reviews .review .review_text {
+    background-color: #ffffeb;
+    padding: 10px;
+}
+
+
+/* ADD REVIEW */
+.add_review form {
+    margin-top: 20px;
+
+}
+.add_review .div_poster {
+    display: flex;
+    text-align: center;
+    height: 25vh;
+    margin-top: 10px;
+}
+.add_review .div_poster img {
+    margin: auto;
+    height: 100%;
+}
+.add_review .div_btn {
+    margin-top: 10px;
+    text-align: right;
 }
 
 

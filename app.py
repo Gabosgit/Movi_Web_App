@@ -135,6 +135,33 @@ def update_info(data, movie):
         db.session.commit()
 
 
+def get_reviews_by_movie_id(movie_id):
+    """Gets the reviews for a specific movie_id."""
+    try:
+        reviews = db.session.query(Review).filter_by(movie_id=movie_id).all()
+        return reviews
+    except Exception as e:
+        print(f"Error al obtener reseñas: {e}")
+        return []
+
+
+def movie_reviews(movie_id):
+    """Gets the reviews and usernames for a movie_id."""
+    # Gets review by movie_id
+    reviews = db.session.query(Review).filter_by(movie_id=movie_id).all()
+    user_names = {}  # Dictionary for storing usernames
+
+    for review in reviews:
+        # Iterates User filtering by id taking the id from review_user_id
+        user = db.session.query(User).filter_by(id=review.user_id).first()
+        if user:
+            user_names[review.user_id] = user.name
+        else:
+            user_names[review.user_id] = "No user"
+
+    return user_names
+
+
 @app.route('/')
 def home():
     """ home page of the application """
@@ -325,6 +352,13 @@ def update_movie(user_id, movie_id):
     if request.method == 'POST':
         data = request.get_json()  # Parse the JSON from the request body
         prompt = data.get('prompt')  # Access the 'prompt' value
+        review = data.get('review')
+        print("SOMEZHING")
+
+
+        if review:
+            print(review)
+
 
         if not prompt:
             update_info(data, movie)
@@ -333,7 +367,7 @@ def update_movie(user_id, movie_id):
         if prompt == 'bio':
             prompt = f"Get a short text about the biography of the director of the movie '{movie.title}', '{movie.director.name}'."
             birth = f"Get only the birthday data without extra text in the format day/month/year of the director of the movie '{movie.title}', '{movie.director.name}'."
-            death = f"Get only the death day data without extra text in the format day/month/year of the director of the movie '{movie.title}', '{movie.director.name}'."
+            death = f"Get only the death day data without any extra text in the format day/month/year of the director of the movie '{movie.title}', '{movie.director.name}'."
             try:
                 response = fetch_from_gemini(prompt)
                 birthday = fetch_from_gemini(birth)
@@ -358,9 +392,39 @@ def update_movie(user_id, movie_id):
 
 @app.route('/info/movie/<movie_id>/user/<user_id>', methods=['GET', 'POST'])
 def info_movie(movie_id, user_id):
+
     movie = db.get_or_404(Movie, movie_id)
     user = db.get_or_404(User, user_id)
-    return render_template('info_movie.html', movie=movie, user=user)
+    reviews = get_reviews_by_movie_id(movie_id)
+    dict_review_usernames = movie_reviews(movie_id)
+
+
+    return render_template('info_movie.html', movie=movie, user=user, reviews=reviews, dict_review_usernames=dict_review_usernames)
+
+
+@app.route('/review/user/<user_id>/movie/<movie_id>/', methods=['GET', 'POST'])
+def add_review(movie_id, user_id):
+    movie = db.get_or_404(Movie, movie_id)
+    user = db.get_or_404(User, user_id)
+
+    if request.method == 'POST':
+        new_review = request.form.get('new_review')
+        user_rating = request.form.get('user_rating')
+
+        new_review = Review(
+            user_id=user_id,
+            movie_id=movie_id,
+            rating=user_rating,
+            text=new_review
+        )
+        with app.app_context():
+            db.session.add(new_review)
+            db.session.commit()  # commits the session to the DB.
+        return redirect(f'/info/movie/{movie_id}/user/{user_id}')
+
+
+    return render_template('add_review.html', movie=movie, user=user)
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5002, debug=True)
