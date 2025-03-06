@@ -43,6 +43,10 @@ Info Movie
             <p><b>Birthday:</b> {{ movie.director.birth }}</p>
             <p><b>Death day:</b> {{ movie.director.death }}</p>
         </div>
+        <div class="col-sm-12">
+            <br>
+            <p>If any information about the movie is missing, you can try to update it from the <b>UPDATE</b> section in your list of favorite movies.</p>
+        </div>
         <div class="col-sm-12 reviews">
             <h2>Movie Reviews</h2>
             {% for review in reviews %}

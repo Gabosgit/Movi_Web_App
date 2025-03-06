@@ -1,12 +1,18 @@
+"""
+Movi Web App allows to create users and set a list of favorite movies.
+It is possible to fetch information of the movie with artificial intelligent
+"""
 from flask import Flask, render_template, request, redirect, jsonify
-from datamanager.data_models import db, User, Movie, Review, Director, Genre, user_movie_association
+from datamanager.data_models import db, User, Movie, Review, Director, user_movie_association
 import os
 from dotenv import load_dotenv
 import requests
 from datamanager.gemini_ai import fetch_from_gemini
 from sqlalchemy import desc, delete
+from api import (api)  # Importing the API blueprint
 
 app = Flask(__name__)
+app.register_blueprint(api, url_prefix='/api')  # Registering the blueprint
 
 # data_folder is el Path to folder data
 data_folder = os.path.join(app.root_path, 'data')
@@ -75,6 +81,7 @@ def get_needed_data(data_movie):
 
 
 def add_director_return_record_id(director_name):
+    """ Get the director_name and insert a record in the director table. Return the id of this new record """
     with app.app_context():
         add_director_record = Director(
             name=director_name
@@ -86,6 +93,10 @@ def add_director_return_record_id(director_name):
 
 
 def add_movie_return_record_id(director_id, data):
+    """ Gets the director_id and the data of the new movie.
+        Insert the movie with all information in the table Movies.
+        Return the ID of the new movie table record.
+    """
     with app.app_context():
         add_movie_record = Movie(
             title=data['title'],
@@ -104,6 +115,7 @@ def add_movie_return_record_id(director_id, data):
 
 
 def connect_user_movie(user_id, id_new_movie):
+    """ Insert a record in the association table user_monies_association connecting the user_id with the new movie id """
     with app.app_context():
         user = User.query.get(user_id)
         movie = Movie.query.get(id_new_movie)
@@ -117,23 +129,28 @@ def connect_user_movie(user_id, id_new_movie):
 
 
 def update_info(data, movie):
-        update_data = {}
-        for k, v in data.items():
-            update_data[k] = v
+    """
+        Get a movie and the new data to update.
+        Put the data content in a dictionary
+        Update the data to the movie and commit the changes
+    """
+    update_data = {}
+    for k, v in data.items():
+        update_data[k] = v
 
-        if update_data['description']:
-            movie.description = update_data['description']
-        if update_data['rating']:
-            movie.rating = update_data['rating']
-        if update_data['genre']:
-            movie.genre = update_data['genre']
-        if update_data['bio']:
-            movie.director.bio = update_data['bio']
-        if update_data['birth']:
-            movie.director.birth = update_data['birth']
-        if update_data['death']:
-            movie.director.death = update_data['death']
-        db.session.commit()
+    if update_data['description']:
+        movie.description = update_data['description']
+    if update_data['rating']:
+        movie.rating = update_data['rating']
+    if update_data['genre']:
+        movie.genre = update_data['genre']
+    if update_data['bio']:
+        movie.director.bio = update_data['bio']
+    if update_data['birth']:
+        movie.director.birth = update_data['birth']
+    if update_data['death']:
+        movie.director.death = update_data['death']
+    db.session.commit()
 
 
 def get_reviews_by_movie_id(movie_id):
@@ -225,17 +242,10 @@ def list_users():
 
 @app.route('/users/<user_id>')
 def user_movies(user_id):
-    """ Exhibits a specific user’s list of favorite movies.
-        Uses the <user_id> to fetch the appropriate user’s movies."""
-    data = {
-        'poster_url': '',
-        'title': "NOT FOUND",
-        'year': '',
-        'genre': '',
-        'director': '',
-        'rating': ''
-    }
-
+    """
+        Uses the <user_id> to fetch the appropriate user’s movies.
+        Shows a specific user’s list of favorite movies.
+    """
     user = User.query.get(user_id)
     # Sort user movies by user_movie_association ID
     # The last movie added is the first one listed
@@ -268,6 +278,16 @@ def add_user():
 
 @app.route('/users/<user_id>/add_movie', methods=['GET', 'POST'])
 def add_movie(user_id):
+    """
+        Gets the id of a user and retrieves it from the database.
+        By POST request it gets a movie title and searches for the movie in the API.
+        If the movie title is not found in the API it raises a notification.
+        If the title exists in the API it displays the found movie.
+        By POST request it gets a confirmation of the movie to add in the user's movie list.
+        Before adding the movie, it adds the name of the director in the director table to add the id of the director in the new record in the movie table.
+        The function does not add the movie if it already exists in the movie table.
+        The function does not add the movie to the user's movie list if the movie already exists.
+    """
     msg = ''
     user = User.query.get(user_id)
     data = {}
@@ -340,11 +360,11 @@ def delete_movie(user_id, movie_id):
     """ Upon visiting this route, a specific movie will be removed from a user’s favorite movie list """
     user = db.session.query(User).get(user_id)
     movie = db.session.query(Movie).get(movie_id)
-    delete = request.form.get('delete')
+    movie_to_delete = request.form.get('delete')
     msg = f'Are you sure you want to delete this movie from your favourite movies.'
 
 
-    if delete == 'delete':
+    if movie_to_delete == 'delete':
         if user and movie:
             user.movies.remove(movie)  # Remove the movie from the users movie list.
             db.session.commit()
@@ -402,18 +422,21 @@ def update_movie(user_id, movie_id):
 
 @app.route('/info/movie/<movie_id>/user/<user_id>', methods=['GET', 'POST'])
 def info_movie(movie_id, user_id):
-
+    """ Retrieves the movie data and shows the information """
     movie = db.get_or_404(Movie, movie_id)
     user = db.get_or_404(User, user_id)
     reviews = get_reviews_by_movie_id(movie_id)
     dict_review_usernames = movie_reviews(movie_id)
-
 
     return render_template('info_movie.html', movie=movie, user=user, reviews=reviews, dict_review_usernames=dict_review_usernames)
 
 
 @app.route('/review/user/<user_id>/movie/<movie_id>/', methods=['GET', 'POST'])
 def add_review(movie_id, user_id):
+    """
+        Add the user's rating and review in the review table
+        The reviews are shown in the movie's INFO section.
+    """
     movie = db.get_or_404(Movie, movie_id)
     user = db.get_or_404(User, user_id)
 
