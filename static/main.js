@@ -4,6 +4,7 @@ const form_update = document.getElementById('form_update');
 const form_review = document.getElementById('form_review');
 
 
+
 btn_description.addEventListener('click', async function() {
             try {
                 const response = await fetch(route, {
@@ -20,6 +21,7 @@ btn_description.addEventListener('click', async function() {
                 document.getElementById('movie_description').textContent = "An error occurred.";
             }
 });
+
 
 btn_bio.addEventListener('click', async function() {
             try {
@@ -57,33 +59,25 @@ form_update.addEventListener('submit', function(event) {
     },
     body: JSON.stringify(data),
   })
-    .then(response => response.json())
-    .then(result => {
-      console.log('Success:', result);
-      //Handle the response.
+    .then(response => response.json()) // Parse the JSON response
+    .then(data => {
+      // Handle the response.
+      if (data.response) {
+        const myString = "The INFO movie has been successfully updated"; // The string you want to send
+        const msgColor = "green"
+        localStorage.setItem('myString', myString);
+        localStorage.setItem('msg_color', "green");
+        window.location.href = route_movie_info;
+      } else {
+        // Handle the failure case (e.g., display an error message)
+        console.log(result.message);
+      }
+      //window.location.href = route_movie_info;
     })
     .catch(error => {
       console.error('Error:', error);
     });
 });
 
-form_review.addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent standard form submission
 
-    alert("ELLO")
-//    const formText = new FormData(form_review);
-//    const review = {};
-//
-//    formData.forEach((value, key) => {
-//    review[key] = value;
-//    });
-//
-//    fetch(route, {
-//        method: 'POST',
-//        headers: {
-//          'Content-Type': 'application/json',
-//        },
-//        body: JSON.stringify(review)
-//    })
 
-}

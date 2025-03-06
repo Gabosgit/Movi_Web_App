@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 import requests
 from datamanager.gemini_ai import fetch_from_gemini
+from sqlalchemy import desc, delete
 
 app = Flask(__name__)
 
@@ -138,7 +139,7 @@ def update_info(data, movie):
 def get_reviews_by_movie_id(movie_id):
     """Gets the reviews for a specific movie_id."""
     try:
-        reviews = db.session.query(Review).filter_by(movie_id=movie_id).all()
+        reviews = db.session.query(Review).filter_by(movie_id=movie_id).order_by(desc(Review.review_id)).all()
         return reviews
     except Exception as e:
         print(f"Error al obtener reseñas: {e}")
@@ -148,7 +149,8 @@ def get_reviews_by_movie_id(movie_id):
 def movie_reviews(movie_id):
     """Gets the reviews and usernames for a movie_id."""
     # Gets review by movie_id
-    reviews = db.session.query(Review).filter_by(movie_id=movie_id).all()
+    reviews = db.session.query(Review).filter_by(movie_id=movie_id).order_by(desc(Review.review_id)).all()
+
     user_names = {}  # Dictionary for storing usernames
 
     for review in reviews:
@@ -160,6 +162,18 @@ def movie_reviews(movie_id):
             user_names[review.user_id] = "No user"
 
     return user_names
+
+
+def delete_reviews_by_user_id(user_id):
+    """Deletes all reviews associated with a given user_id."""
+    try:
+        with db.session() as session:
+            session.execute(delete(Review).where(Review.user_id == user_id))
+            session.commit()
+        print(f"Reviews for user_id {user_id} deleted successfully.")
+    except Exception as e:
+        print(f"Error deleting reviews for user_id {user_id}: {e}")
+        db.session.rollback()
 
 
 @app.route('/')
@@ -175,6 +189,7 @@ def list_users():
         user_id_to_delete = request.form.get('user_id')
 
         if user_id_to_delete:
+            delete_reviews_by_user_id(user_id_to_delete)
             user_to_delete = db.get_or_404(User, user_id_to_delete)
             db.session.delete(user_to_delete)
             db.session.commit()
@@ -189,20 +204,20 @@ def list_users():
 
             if search_name:
                 users = User.query.filter(User.name.like(f"%{search_name}%")).all()
-                msg = f"Select a user from the list."
+                msg = f"Select a user from the list. Or click Start."
                 if not users:
                     msg = f"No user was found with the name {search_name}"
                     users = User.query.all()
             else:
                 # Get all records from the 'User' table
                 users = User.query.all()
-                msg = "Select a user from the list."
+                msg = "Select a user from the list. Or click Start."
             return render_template('users.html', users=users, msg=msg)
 
 
     # Get all records from the 'User' table
     users = User.query.all()
-    msg = "Select a user from the list."
+    msg = "Select a user from the list. Or click Start."
 
             # Access other attributes of the User object as needed
     return render_template('users.html', users=users, msg=msg)
@@ -347,22 +362,17 @@ def update_movie(user_id, movie_id):
     movie = db.get_or_404(Movie, movie_id)
     user = db.get_or_404(User, user_id)
     bio = movie.director.bio
+    msg = "Click Submit to save the new data"
 
 
     if request.method == 'POST':
         data = request.get_json()  # Parse the JSON from the request body
         prompt = data.get('prompt')  # Access the 'prompt' value
-        review = data.get('review')
-        print("SOMEZHING")
-
-
-        if review:
-            print(review)
-
 
         if not prompt:
             update_info(data, movie)
-
+            print("SE ACTUALIZÒ")
+            return jsonify({'response': "FINE"}), 200
 
         if prompt == 'bio':
             prompt = f"Get a short text about the biography of the director of the movie '{movie.title}', '{movie.director.name}'."
@@ -386,8 +396,8 @@ def update_movie(user_id, movie_id):
                 print(f"Error calling Gemini API: {e}")
                 return jsonify({"error": "Failed to generate text"}), 500
 
-    return render_template('update_movie.html', user=user, movie=movie, bio=bio)
 
+    return render_template('update_movie.html', user=user, movie=movie, bio=bio, msg=msg)
 
 
 @app.route('/info/movie/<movie_id>/user/<user_id>', methods=['GET', 'POST'])

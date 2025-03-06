@@ -6,6 +6,7 @@ body, html {
     margin: 0px;
     padding: 0px;
     overflow-x: hidden;
+    font-family: "Finlandica", sans-serif;
 }
 
 /* GENERALS */
@@ -215,6 +216,17 @@ input[type="submit"]:active {
 
 
 /* ADD MOVIE */
+.add_movie .col-md-6 form {
+    text-align: center;
+}
+.add_movie form h1 {
+    text-align: center;
+
+}
+.add_movie form .div_input {
+    margin: 10px 0px;
+
+}
 .show_movies .row .col {
     display: flex;
     flex-direction: column;
@@ -380,15 +392,11 @@ input[type="submit"]:active {
 
 
 /* ADD REVIEW */
-.add_review form {
-    margin-top: 20px;
-
-}
 .add_review .div_poster {
     display: flex;
     text-align: center;
     height: 25vh;
-    margin-top: 10px;
+    margin: 50px 0px;
 }
 .add_review .div_poster img {
     margin: auto;
@@ -414,7 +422,10 @@ input[type="submit"]:active {
     }
 
     ._input {
+        display: flex;
         flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
     }
 
     .div_form form ._input input[type="text"] {
@@ -431,4 +442,30 @@ input[type="submit"]:active {
     }
 }
 
+    .add_user form ._input input[type="text"] {
+    margin: 10px 0px;
+    }
+
+    .show_movies .title {
+        margin-top: 20px;
+    }
+}
+
+
+@media screen and (max-width: 767px) {
+    .add_movie form {
+        margin: 20px 0px;
+    }
+}
+
+@media screen and (max-width: 1005px) {
+    .add_movie form .div_input {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .add_movie form input {
+        margin: 10px 0px;
+    }
 }

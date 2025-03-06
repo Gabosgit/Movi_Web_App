@@ -11,7 +11,7 @@ Info Movie
     <div class="row">
         <div class="col">
             <h1><b>INFO MOVIE</b></h1>
-            <p>Here is the <b>info</b> of the movie</p>
+            <p id="msg" style="color: {msg_color}">Here is the <b>info</b> of the movie</p>
         </div>
         <div class="col">
             <div class="col hello_user"><p>
@@ -61,10 +61,16 @@ Info Movie
             {% endfor %}
         </div>
     </div>
-
 </div>
-
-
-
+<script>
+    const myString = localStorage.getItem('myString');
+    const msg_color = localStorage.getItem('msg_color');
+    if (myString) {
+        document.getElementById('msg').textContent = myString;
+        document.getElementById('msg').style.color = msg_color;
+        localStorage.removeItem('myString');
+        localStorage.removeItem('msg_color');
+    }
+</script>
 
 {% endblock %}

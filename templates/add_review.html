@@ -9,10 +9,24 @@ Add Author
 {% block content %}
 <!-- the content in the layout -->
 <div class="add_review">
-  <h1>NEW REVIEW</h1>
-  <p><b>{{ user.name }}</b>, Add your rating and review to the movie " <b>{{ movie.title }}</b> " <br>
-    When you are done click <b>add review</b>.
-  </p>
+  <div class="row">
+    <div class="col-sm-6">
+      <h1>NEW REVIEW</h1>
+      <p><b>{{ user.name }}</b>, Add your rating and review to the movie " <b>{{ movie.title }}</b> " <br>
+        When you are done click <b>add review</b>.<br>
+        You will be able to see your review in the INFO section of the movie.
+      </p>
+    </div>
+    <div class="col-sm-6">
+      <div class="col hello_user"><p>
+        <b>Hello {{ user.name }} !!!</b></p>
+        <p>Click here to see your</p>
+        <form action="/users/{{ user.id }}" method="GET">
+          <button type="submit" class="btn btn-primary" name="user_id" value="{{ user.id }}">favorite movies</button>
+        </form>
+      </div>
+    </div>
+  </div>
   <div class="div_poster">
     <img src="{{ movie.poster }}" alt="The cover is not available">
   </div>

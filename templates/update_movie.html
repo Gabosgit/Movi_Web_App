@@ -24,7 +24,6 @@ user movies
     </div>
   </div>
 
-
   <section class="cover_review">
     <div class="movie_title">
       <h1>{{ movie.title }} <span>{{ movie.year }}</span></h1>
@@ -45,49 +44,51 @@ user movies
     </div>
   </section>
 
-
-    <div class="bio_description">
-      <form id="form_update" method="POST">
-        <h2><b>UPDATE MOVIE INFO</b></h2>
-        <p>When you are done editing, click on <b>submit</b> to save the information.</p>
+  <div class="bio_description">
+    <form id="form_update" method="POST">
+      <h2><b>UPDATE MOVIE INFO</b></h2>
+      <p>When you are done editing, click on <b>submit</b> to save the information.</p>
+      <div class="row">
+        <div class="col-sm-4">
+          <label for="rating"><b>Rating</b></label><br>
+          <input type="number" min="1" max="10" step="0.1" id="rating" name="rating" value="{{ movie.rating }}">
+        </div>
+        <div class="col-sm-8">
+          <label for="genre"><b>Genre</b></label>
+          <input type="text" id="genre" name="genre" value="{{ movie.genre }}" style="width: 100%;">
+        </div>
+      </div>
+      <div class="description">
+        <label for="text_description"><b>Description</b></label>
+        <textarea class="form-control" rows="5" id="text_description" name="description">{{ movie.description }}</textarea>
+        <p>If the description is missing, click
+          <button id="btn_description" type="button" name="btn_description" value="" class="btn btn-info">get description</button>
+          to find the information with GEMINI AI API
+        </p>
+      </div>
+      <div class="bio">
+        <label for="text_bio"><b>Director Bio</b></label>
         <div class="row">
-          <div class="col-sm-4">
-            <label for="rating"><b>Rating</b></label><br>
-            <input type="number" min="1" max="10" step="0.1" id="rating" name="rating" value="{{ movie.rating }}">
-          </div>
-          <div class="col-sm-8">
-            <label for="genre"><b>Genre</b></label>
-            <input type="text" id="genre" name="genre" value="{{ movie.genre }}" style="width: 100%;">
-          </div>
+          <div class="col"><p><b>name</b> <span>{{ movie.director.name }}</span> </p></div>
+          <div class="col"><p><b>birthday:</b> <input type="text" id="birth" name="birth" value="{{ movie.director.birth }}" maxlength="10"></p></div>
+          <div class="col"><p><b>death day:</b> <input type="text" id="death" name="death" value="{{ movie.director.death }}" maxlength="10"></p></div>
         </div>
-        <div class="description">
-          <label for="text_description"><b>Description</b></label>
-          <textarea class="form-control" rows="5" id="text_description" name="description">{{ movie.description }}</textarea>
-          <p>If the description is missing, click
-            <button id="btn_description" type="button" name="btn_description" value="" class="btn btn-info">get description</button>
-            to find the information with GEMINI AI API
-          </p>
-        </div>
-        <div class="bio">
-          <label for="text_bio"><b>Director Bio</b></label>
-          <div class="row">
-            <div class="col"><p><b>name</b> <span>{{ movie.director.name }}</span> </p></div>
-            <div class="col"><p><b>birthday:</b> <input type="text" id="birth" name="birth" value="{{ movie.director.birth }}" maxlength="10"></p></div>
-            <div class="col"><p><b>death day:</b> <input type="text" id="death" name="death" value="{{ movie.director.death }}" maxlength="10"></p></div>
-          </div>
-          <textarea class="form-control" rows="5" id="text_bio" name="bio">{{ movie.director.bio }}</textarea>
-          <p>If the bio is missing, click
-            <button id="btn_bio" type="button" name="btn_bio" value="" class="btn btn-info">get bio</button>
-            to find the information with GEMINI AI API
-          </p>
-        </div>
-        <div class="div_update_submit">
-          <button type="submit" name="submit" value="submit" class="btn btn-warning">Submit</button>
-        </div>
-      </form>
-    </div>
-
+        <textarea class="form-control" rows="5" id="text_bio" name="bio">{{ movie.director.bio }}</textarea>
+        <p>If the bio is missing, click
+          <button id="btn_bio" type="button" name="btn_bio" value="" class="btn btn-info">get bio</button>
+          to find the information with GEMINI AI API
+        </p>
+      </div>
+      <div class="div_update_submit">
+        <p> {{ msg }} </p>
+        <button type="submit" name="submit" value="submit" class="btn btn-warning">Submit</button>
+      </div>
+    </form>
+  </div>
 </div>
 
-<script> const route = "/users/{{ user.id }}/update_movie/{{ movie.id }}"</script>
+<script>
+  const route = "/users/{{ user.id }}/update_movie/{{ movie.id }}"
+  const route_movie_info = "/info/movie/{{ movie.id }}/user/{{ user.id }}"
+</script>
 {% endblock %}
